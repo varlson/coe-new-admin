@@ -1,0 +1,10 @@
+.title1 {
+  @apply text-xl font-bold font-jura;
+}
+.title2 {
+  @apply font-bold font-jura;
+}
+
+.title3 {
+  @apply font-semibold font-jura;
+}

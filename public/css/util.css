@@ -1,0 +1,3 @@
+.text-input {
+  @apply px-4 py-4 text-red900 rounded font-play_fair text-xl;
+}

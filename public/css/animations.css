@@ -1,0 +1,47 @@
+.bg-anim {
+  animation: bg-anim-name 1s forwards;
+}
+
+.rot-anim {
+  animation: rot 0.5s forwards;
+}
+
+.close-anim {
+  animation: close-amin-name 0.5s forwards;
+}
+
+@keyframes rot {
+  0% {
+    transform: rotate(-10deg) scale(0.7);
+  }
+  50% {
+    transform: rotate(10deg) scale(1.3);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes bg-anim-name {
+  0% {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  100% {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+@keyframes close-amin-name {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
