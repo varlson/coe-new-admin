@@ -18,15 +18,26 @@ import { useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 function AddPost() {
-  const router = useRouter();
+  const [imageError, setImageError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<Partial<IPost>>(defaultPostValues);
   const [submitBtnIsClicked, setSubmitBtnIsClicked] = useState(false);
+  const [acceptableFile, setAcceptableFile] = useState<string>("image/*");
+
   const [chekbox, setChekbox] = useState({
     news: true,
     slide: false,
     notice: false,
   });
+
+  const [postType, setPostType] = useState(
+    chekbox.news
+      ? PostTypes.NEWS
+      : chekbox.notice
+      ? PostTypes.NOTICE
+      : PostTypes.SLIDE
+  );
+
   const changeHandle = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -49,8 +60,23 @@ function AddPost() {
       console.log("sizes");
       console.log(currentFile.size);
 
-      const _img = new Image();
+      // const _img = new Image();
+      const img: any = new Image();
 
+      img.onload = function (this: HTMLImageElement) {
+        setImageError(null);
+        const wid = this.width;
+        const hei = this.height;
+
+        if (wid < 800) {
+          setImageError("A largura mínima para imagem é de 800 pixel");
+        }
+
+        if (hei < 500) {
+          setImageError("A altura mínima para imagem é de 500 pixel");
+        }
+      };
+      img.src = URL.createObjectURL(files[0] as File);
       setFile(files[0]);
       const blobURL = URL.createObjectURL(files[0] as File);
       setBlobUrl(blobURL);
@@ -63,11 +89,6 @@ function AddPost() {
     setIsLoading(true);
     setSubmitBtnIsClicked(true);
     e.preventDefault();
-    const postType = chekbox.news
-      ? PostTypes.NEWS
-      : chekbox.notice
-      ? PostTypes.NOTICE
-      : PostTypes.SLIDE;
 
     const postValidation = PostValidation(post, defaultPostErrorValue, file);
 
@@ -105,6 +126,12 @@ function AddPost() {
   };
 
   const chackboxHandle = (e: ChangeEvent<HTMLInputElement>) => {
+    if (chekbox.slide || chekbox.news) {
+      setAcceptableFile("image/*");
+    } else {
+      setAcceptableFile("application/pdf");
+    }
+
     const { name } = e.target;
     var checkKey: keyof typeof chekbox;
     setChekbox(resetedCheckboxValues);
@@ -159,7 +186,7 @@ function AddPost() {
           </div>
 
           <div className="flex gap-x-2 w-24 justify-between">
-            <label htmlFor="news">Slide</label>
+            <label htmlFor="">Slide</label>
             <input
               checked={chekbox.slide}
               type="checkbox"
@@ -170,7 +197,7 @@ function AddPost() {
           </div>
 
           <div className="flex gap-x-2 w-24 justify-between">
-            <label htmlFor="news">Edital</label>
+            <label htmlFor="">Edital</label>
             <input
               name="notice"
               checked={chekbox.notice}
@@ -225,6 +252,7 @@ function AddPost() {
                 className="hidden"
                 type="file"
                 name="file"
+                accept={acceptableFile}
               />
 
               <label htmlFor="myfile">
@@ -260,6 +288,7 @@ function AddPost() {
             </button>
           </div>
         )}
+        <p>{imageError}</p>
       </div>
 
       <Button
