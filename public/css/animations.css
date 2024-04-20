@@ -45,3 +45,15 @@
     opacity: 0;
   }
 }
+
+/* .change-image:hover + div {
+  @apply opacity-100;
+} */
+
+.change-image:hover + div {
+  @apply opacity-100;
+}
+
+/* .change-element:hover {
+  @apply opacity-100;
+} */

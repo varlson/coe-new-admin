@@ -57,12 +57,19 @@ export const PostValidation = (
 ) => {
   var thereIsError: boolean = false;
   const { title, body, resumo } = data;
+
   Object.entries({ title, body, resumo }).map(([key, value]) => {
     const objKey = key as keyof PostError;
+
     if (!value || value == "" || typeof value == undefined) {
       error[objKey] = `O campo '${key}' é obrigatório!`;
       thereIsError = true;
-    } else if (value.length < 100) {
+    } else {
+      error[objKey] = "";
+      thereIsError = false;
+    }
+
+    if (value.length < 100) {
       error[objKey] = `A quantidade de caracter mínimo para '${key}' é de 100!`;
       thereIsError = true;
     }
@@ -71,7 +78,34 @@ export const PostValidation = (
   if (!file || file == null || typeof file == undefined) {
     thereIsError = true;
     error.file = "Por favor, adicione uma imgagem!";
+  } else {
+    error.file = "";
+    thereIsError = false;
   }
 
   return { error, thereIsError };
+};
+
+export const validateImageResolution = async (image: string) => {
+  const img: any = new Image();
+
+  img.onload = function (this: HTMLImageElement) {
+    const wid = this.width;
+    const hei = this.height;
+
+    if (wid < 800) {
+      console.log("A largura mínima para imagem é de 800 pixel");
+      return "A largura mínima para imagem é de 800 pixel";
+    }
+
+    if (hei < 500) {
+      console.log("A largura mínima para imagem é de 800 pixel");
+
+      return "A altura mínima para imagem é de 500 pixel";
+    }
+  };
+
+  img.src = image;
+
+  return null;
 };

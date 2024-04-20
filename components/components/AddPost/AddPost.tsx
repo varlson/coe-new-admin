@@ -2,33 +2,36 @@
 import Modal from "@/components/partials/modal/Modal";
 import Warnings from "@/components/partials/warnings/Warnings";
 import Button from "@/components/ui/Button/Button";
-
 import {
   defaultPostErrorValue,
   defaultPostValues,
   resetedCheckboxValues,
 } from "@/constants/constants";
-
 import { createPosts } from "@/services/endpoint";
+
 import { IPost, ModalTypes, PostTypes } from "@/types/types";
 import { postFormDataBuilder, PostValidation } from "@/util/util";
 import NextImage from "next/image";
-
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 function AddPost() {
+  const [formError, setFormError] = useState(defaultPostErrorValue);
   const [imageError, setImageError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<Partial<IPost>>(defaultPostValues);
   const [submitBtnIsClicked, setSubmitBtnIsClicked] = useState(false);
-  const [acceptableFile, setAcceptableFile] = useState<string>("image/*");
-
   const [chekbox, setChekbox] = useState({
     news: true,
     slide: false,
     notice: false,
   });
+
+  useEffect(() => {
+    setFormError(defaultPostErrorValue);
+  }, []);
+
+  const router = useRouter();
 
   const [postType, setPostType] = useState(
     chekbox.news
@@ -46,21 +49,16 @@ function AddPost() {
   };
 
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
+
   const uploadFileHandle = (e: ChangeEvent<HTMLInputElement>) => {
+    setImageError(null);
     const { files } = e.target;
     if (files) {
       const currentFile = files[0];
 
-      // if(currentFile.size /1024 < ){
-
-      // }else if(){
-
-      // }
-
       console.log("sizes");
       console.log(currentFile.size);
 
-      // const _img = new Image();
       const img: any = new Image();
 
       img.onload = function (this: HTMLImageElement) {
@@ -86,15 +84,23 @@ function AddPost() {
   const [file, setFile] = useState<null | File>(null);
 
   const submitHandle = async (e: FormEvent<HTMLFormElement>) => {
-    setIsLoading(true);
-    setSubmitBtnIsClicked(true);
+    // setIsLoading(true);
+    // setSubmitBtnIsClicked(true);
     e.preventDefault();
 
-    const postValidation = PostValidation(post, defaultPostErrorValue, file);
+    await setFormError({ ...defaultPostErrorValue });
+    const postValidation = PostValidation(post, formError, file);
+    setFormError({ ...postValidation.error });
 
-    if (postValidation.thereIsError) {
+    await setFormError((prev) => ({
+      ...prev,
+      ["file"]: formError.file || imageError || "",
+    }));
+
+    if (postValidation.thereIsError || imageError) {
       console.log("Com errors");
-      console.log(postValidation);
+      console.log(formError);
+      setIsLoading(false);
       return;
     }
 
@@ -110,7 +116,6 @@ function AddPost() {
     console.log(data);
 
     // const resp = await createPosts(data);
-
     // if (resp.status) {
     //   await setIsLoading(false);
     //   console.log(resp);
@@ -126,12 +131,6 @@ function AddPost() {
   };
 
   const chackboxHandle = (e: ChangeEvent<HTMLInputElement>) => {
-    if (chekbox.slide || chekbox.news) {
-      setAcceptableFile("image/*");
-    } else {
-      setAcceptableFile("application/pdf");
-    }
-
     const { name } = e.target;
     var checkKey: keyof typeof chekbox;
     setChekbox(resetedCheckboxValues);
@@ -142,10 +141,7 @@ function AddPost() {
   };
 
   return (
-    <form
-      onSubmit={submitHandle}
-      className=" flex flex-col bg-red-900 text-white p-10"
-    >
+    <form onSubmit={submitHandle} className=" flex flex-col text-white p-10">
       <Modal
         modalType={ModalTypes.SpinnerModal}
         isOpen={isLoading}
@@ -157,7 +153,9 @@ function AddPost() {
           Título do Post
         </label>
         <input
-          className="text-input h-10"
+          className={`text-input h-10 border rounded-md ${
+            formError.title ? "border-red-600" : ""
+          } focus:outline-none`}
           placeholder="Entre com o título do post"
           type="text"
           name="title"
@@ -166,7 +164,7 @@ function AddPost() {
           required
           maxLength={100}
         />
-        <Warnings text={post.title} />
+        <Warnings isError={false} text={post.title} />
       </div>
 
       <div className="flex flex-col gap-y-2 mt-5">
@@ -215,13 +213,18 @@ function AddPost() {
         </label>
         <textarea
           rows={3}
-          className="  text-justiry text-input"
+          className={`text-justify text-input border rounded-md ${
+            formError.resumo ? "border-red-600" : ""
+          } `}
           placeholder="Entre com o resumo do post "
           name="resumo"
           value={post?.resumo}
           onChange={changeHandle}
           required
         />
+        {formError.resumo && (
+          <Warnings isError={true} text={formError.resumo} />
+        )}
       </div>
 
       <div className="flex flex-col gap-y-2 mt-5">
@@ -230,13 +233,17 @@ function AddPost() {
         </label>
         <textarea
           rows={10}
-          className="  text-justiry text-input"
+          className={`text-justify border rounded-md text-input ${
+            formError.body ? "border-red-600" : ""
+          } `}
           placeholder="Entre com o resumo do post "
           name="body"
           value={post?.body}
           onChange={changeHandle}
           required
         />
+
+        {formError.body && <Warnings isError={true} text={formError.body} />}
       </div>
 
       <div className="flex flex-col gap-y-2 mt-5">
@@ -252,7 +259,7 @@ function AddPost() {
                 className="hidden"
                 type="file"
                 name="file"
-                accept={acceptableFile}
+                accept={chekbox.notice ? "application/pdf" : "image/*"}
               />
 
               <label htmlFor="myfile">
@@ -288,7 +295,10 @@ function AddPost() {
             </button>
           </div>
         )}
-        <p>{imageError}</p>
+        <div className="flex justify-between">
+          <p className="text-red-700">{formError.file}</p>
+          <p className="text-red-700">{imageError}</p>
+        </div>
       </div>
 
       <Button

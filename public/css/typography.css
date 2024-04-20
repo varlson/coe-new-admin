@@ -8,3 +8,7 @@
 .title3 {
   @apply font-semibold font-jura;
 }
+
+.text-error {
+  @apply text-red700;
+}

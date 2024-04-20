@@ -69,31 +69,33 @@ function Page() {
         setIsOpen={() => {}}
         msg="Deletado com sucesso!"
       />
-      <div className="flex gap-x-2">
-        <div className="bg-red900 self-start rounded">
-          <Icons
-            link="slides/add"
-            label="Adicionar"
-            type={IconTypes.Clickable}
-            alt=""
-            src="add"
-          />
-        </div>
+      <div className="flex gap-x-2  ">
+        <div className="flex gap-x-2 w-10/12 m-auto">
+          <div className="bg-red900 self-start rounded">
+            <Icons
+              link="slides/add"
+              label="Adicionar"
+              type={IconTypes.Clickable}
+              alt=""
+              src="add"
+            />
+          </div>
 
-        <div className="bg-red900 min-h-screen flex-1 p-4 flex flex-wrap gap-4 justify-between">
-          {!errorMsg ? (
-            posts.map((item, index) => (
-              <div key={index}>
-                <PostCard
-                  post={item}
-                  editHandle={editHandle}
-                  deleteHandle={deleteHandle}
-                />
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-xl text-white">{errorMsg}</p>
-          )}
+          <div className="bg-red900 min-h-screen flex-1 p-4 flex flex-wrap gap-4 justify-between">
+            {!errorMsg ? (
+              posts.map((item, index) => (
+                <div key={index}>
+                  <PostCard
+                    post={item}
+                    editHandle={editHandle}
+                    deleteHandle={deleteHandle}
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-xl text-white">{errorMsg}</p>
+            )}
+          </div>
         </div>
       </div>
     </>

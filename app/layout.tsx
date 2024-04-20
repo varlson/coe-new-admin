@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${nunito} ${jura} ${playFair} ${oswald} bg-ligthDark`}>
+      <body className={`${nunito} ${jura} ${playFair} ${oswald} `}>
         <MainAppWrapper>{children}</MainAppWrapper>
       </body>
     </html>

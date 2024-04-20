@@ -15,9 +15,11 @@ const config: Config = {
       },
       colors: {
         dark: "#1e1e1e",
-        red700: "#A23338",
-        red900: "#80282C",
+        darkMidium: "#9e9b9b",
         ligthDark: "#d9d9d9",
+        red700: "#A23338",
+        red500: "#f72020",
+        red900: "#80282C",
       },
       fontFamily: {
         nunito: ["var(--font-nunito)"],
