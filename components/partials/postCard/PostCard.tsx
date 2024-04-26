@@ -1,5 +1,5 @@
 "use client";
-import { IPost } from "@/types/types";
+import { IPost, PostTypes } from "@/types/types";
 import { dateFormater, textSplitter } from "@/util/util";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -15,13 +15,13 @@ function PostCard({ post, editHandle, deleteHandle }: PostCardProps) {
   const deletePost = async () => {
     await deleteHandle(_id);
   };
-  const { _id, createdAt, author_name, img, resumo } = post;
+  const { _id, createdAt, author_name, img, resumo, postType } = post;
   const [modal, setModal] = useState(false);
 
   return (
     <div className="w-72 shadow rounded flex flex-col bg-ligthDark ">
       <Image
-        src={img}
+        src={postType == PostTypes.NOTICE ? "/imgs/edital.png" : img}
         alt=""
         height={500}
         width={500}
@@ -42,7 +42,7 @@ function PostCard({ post, editHandle, deleteHandle }: PostCardProps) {
           <p className="text-sm">{dateFormater(createdAt)}</p>
         </div>
 
-        <div className="flex mt-2 mb-1 justify-between">
+        <div className="flex mt-2 mb-1 justify-between gap-x-2">
           <DefaultBtn
             label="Apagar"
             clickAction={deletePost}

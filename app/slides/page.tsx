@@ -81,7 +81,11 @@ function Page() {
             />
           </div>
 
-          <div className="bg-red900 min-h-screen flex-1 p-4 flex flex-wrap gap-4 justify-between">
+          <div
+            className={` min-h-screen flex-1 p-4 flex flex-wrap gap-4 ${
+              posts.length == 2 ? "" : "justify-between"
+            }`}
+          >
             {!errorMsg ? (
               posts.map((item, index) => (
                 <div key={index}>

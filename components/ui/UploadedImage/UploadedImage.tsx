@@ -24,6 +24,8 @@ function UploadedImage({
   const [file, setFile] = useState<null | File>(null);
   const [imageError, setImageError] = useState<null | string>(null);
 
+  const [pdfName, setPdfName] = useState<string>("");
+
   const onHover = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
     e.currentTarget.classList.add("opacity-100");
     const prev = e.currentTarget.previousElementSibling;
@@ -40,11 +42,11 @@ function UploadedImage({
           const wid = this.width;
           const hei = this.height;
 
-          if (wid < 800 || hei < 400) {
+          if (wid < 700 || hei < 400) {
             reject({
               isValid: false,
               error:
-                "A largura e altura minima para imagem deve ser de 800 pixel e 400 pixel respectivamente",
+                "A largura e altura minima para imagem deve ser de 700 pixel e 400 pixel respectivamente",
             });
           } else {
             setImageError(null);
@@ -61,20 +63,26 @@ function UploadedImage({
     const { files } = e.target;
     if (files) {
       const _file = files[0];
-      imageResolutionValidation(_file)
-        .then(async (resp) => {
-          console.log("resp");
-          console.log(resp);
 
-          setFile(_file);
-          setBlobURL(URL.createObjectURL(_file));
-          changeHandle(_file, imageError ? imageError : "");
-        })
-        .catch((error) => {
-          console.log("error");
-          console.log(error);
-          setImageError(error.error);
-        });
+      if (fileType == "application/pdf") {
+        setPdfName(_file.name);
+        changeHandle(_file, imageError ? imageError : "");
+      } else {
+        imageResolutionValidation(_file)
+          .then(async (resp) => {
+            console.log("resp");
+            console.log(resp);
+
+            setFile(_file);
+            setBlobURL(URL.createObjectURL(_file));
+            changeHandle(_file, imageError ? imageError : "");
+          })
+          .catch((error) => {
+            console.log("error");
+            console.log(error);
+            setImageError(error.error);
+          });
+      }
     }
   };
 
@@ -106,15 +114,17 @@ function UploadedImage({
                 type="file"
                 accept={fileType}
               />
-
-              <NextImage
-                id="file"
-                src={"/icons/add.png"}
-                alt=""
-                height={768}
-                width={571}
-                className="h-14 w-14 rounded m-auto object-cover"
-              />
+              <div className="flex justify-center items-center">
+                <NextImage
+                  id="file"
+                  src={`/icons/${pdfName ? "PDF" : "add"}.png`}
+                  alt=""
+                  height={768}
+                  width={571}
+                  className="h-14 w-14 rounded m-auto object-cover"
+                />
+                {pdfName && <p className="text-center">{pdfName}</p>}
+              </div>
             </label>
           </div>
         ) : (

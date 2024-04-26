@@ -1,14 +1,15 @@
-import AddPost from "@/components/components/AddPost/AddPost";
-import React from "react";
+"use client";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import Form from "./Form";
 
-function page() {
+export default function ExampleClientComponent() {
+  const toEdit = useSearchParams().get("toedit") == "true" ? true : false;
+  const id = useSearchParams().get("id");
+  // const [formPost, setFormPost] = useState<>()
   return (
-    <div className=" bg-darkMidium">
-      <div className="w-10/12 m-auto">
-        <AddPost />
-      </div>
+    <div className="bg-darkMidium ">
+      <Form toEdit={toEdit} id={id} />
     </div>
   );
 }
-
-export default page;

@@ -21,11 +21,13 @@ function InputField({ formKey, form, changeHandle }: InputTextProps) {
   ) => {
     changeHandle(e);
 
-    const field = document.getElementById("field") as HTMLTextAreaElement;
+    const field = document.getElementById(formKey) as HTMLTextAreaElement;
 
     if (field) {
+      field.style.height = "auto";
       field.style.height = field.scrollHeight + "px";
     }
+    // console.log(field.scrollHeight);
   };
 
   return (
@@ -35,8 +37,8 @@ function InputField({ formKey, form, changeHandle }: InputTextProps) {
           {`${formKey} do Post`}
         </label>
         <textarea
-          id="field"
-          rows={3}
+          id={formKey}
+          rows={formKey == "body" ? 6 : formKey == "resumo" ? 4 : 3}
           className={`text-justify text-input border rounded-md ${
             form[formKey].error && form[formKey].text.length >= 1
               ? "border-red-600"
@@ -46,6 +48,7 @@ function InputField({ formKey, form, changeHandle }: InputTextProps) {
           name={formKey}
           value={form[formKey].text}
           onChange={onChangeHandle}
+          required
         />
         {form[formKey].error && form[formKey].text.length >= 1 && (
           <p className="mx-4 text-error">{form[formKey].errorMsg}</p>

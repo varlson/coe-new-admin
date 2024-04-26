@@ -1,5 +1,6 @@
 import { weekDay } from "@/constants/constants";
 import { IPost, PostTypes } from "@/types/types";
+import * as fs from "fs";
 
 export const textSplitter = (text: string, size = 150) => {
   if (text.length >= size) {
@@ -109,3 +110,12 @@ export const validateImageResolution = async (image: string) => {
 
   return null;
 };
+
+// Função para ler o arquivo como blob
+export async function readFileAsBlob() {
+  const imagePath =
+    "/home/varlson/codes/new-coe/coe-admin/public/imgs/edital.png";
+  return fetch(imagePath)
+    .then((response) => response.blob())
+    .then((blob) => blob);
+}

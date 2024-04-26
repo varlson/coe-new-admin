@@ -27,6 +27,7 @@ export interface IPost {
   tags: string[];
   slug: string;
   author_name: string;
+  _id: string;
 }
 
 export enum PostTypes {
