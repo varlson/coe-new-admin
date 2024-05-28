@@ -20,6 +20,7 @@ const config: Config = {
         red700: "#A23338",
         red500: "#f72020",
         red900: "#80282C",
+        lightRed: "#e3978d",
       },
       fontFamily: {
         nunito: ["var(--font-nunito)"],

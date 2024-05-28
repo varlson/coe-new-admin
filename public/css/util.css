@@ -4,3 +4,8 @@
 
 .edital {
 }
+
+.configs {
+  max-height: 0px;
+  overflow: hidden;
+}
