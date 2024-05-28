@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import Spinner from "../Spinner/Spinner";
 type ButtonPropType = {
   label: string;
-  link: string;
+  link?: string;
   type: "submit" | "reset" | "button" | undefined;
-  style: string;
+  style?: string;
   isClicked?: boolean;
 };
 
