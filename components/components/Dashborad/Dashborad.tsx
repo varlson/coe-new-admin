@@ -1,9 +1,11 @@
+"use client";
+import { auth } from "@/auth";
 import Icons from "@/components/ui/Icons/Icons";
 import { IconTypes } from "@/types/types";
-import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 import React from "react";
 
-function Dashborad() {
+export const Dashborad = () => {
   return (
     <div className="text-white flex justify-center bg-red900 rounded items-center gap-x-5 gap-y-2">
       <Icons
@@ -39,6 +41,6 @@ function Dashborad() {
       />
     </div>
   );
-}
+};
 
 export default Dashborad;
