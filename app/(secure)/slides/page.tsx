@@ -4,6 +4,7 @@ import PostCard from "@/components/partials/postCard/PostCard";
 import Icons from "@/components/ui/Icons/Icons";
 import Spinner from "@/components/ui/Spinner/Spinner";
 import { deletePosts, fetchPosts } from "@/services/endpoint";
+import { PostSrvices } from "@/services/postServices/post.services";
 import { IconTypes, IPost, ModalTypes, PostTypes } from "@/types/types";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -31,13 +32,13 @@ function Page() {
 
   const loadPosts = async () => {
     const lan = localStorage.getItem("lan") || "pt";
-    const resp = await fetchPosts(PostTypes.ALL, lan);
-    if (resp.status) {
-      setPosts(resp.posts);
-    } else {
-      setErrorMsg(resp.error);
+    try {
+      const resp = await PostSrvices.getAllPosts<IPost[]>("/api/posts");
+      setPosts(resp);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
